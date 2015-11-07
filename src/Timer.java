@@ -12,12 +12,13 @@ public class Timer implements ActionListener {
     public static final String STOP_BUTTON_TEXT = "Stop";
     public static final String TIMER_BEGINNING_FILE = "timerBackup.txt";
     public static final int ONE_SECOND = 1000;
-
+    private static final String PAUSE_BUTTON_TEXT = "Pause";
 
 
     private final JLabel timeLabel = new JLabel();
-    private final JButton pauseButton = new JButton(STOP_BUTTON_TEXT);
-    private final JButton resumeButton = new JButton(START_BUTTON_TEXT);
+    private final JButton stopButton = new JButton(STOP_BUTTON_TEXT);
+    private final JButton startButton = new JButton(START_BUTTON_TEXT);
+    private final JButton pauseButton = new JButton(PAUSE_BUTTON_TEXT);
     private final CountTimer countTimer = new CountTimer();
 
 
@@ -32,11 +33,12 @@ public class Timer implements ActionListener {
         panel.setLayout(new BorderLayout());
         timeLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         panel.add(timeLabel, BorderLayout.NORTH);
-        pauseButton.addActionListener(this);
-        resumeButton.addActionListener(this);
+        stopButton.addActionListener(this);
+        startButton.addActionListener(this);
         JPanel cmdPanel = new JPanel();
         cmdPanel.setLayout(new GridLayout());
-        cmdPanel.add(resumeButton);
+        cmdPanel.add(startButton);
+        cmdPanel.add(stopButton);
         cmdPanel.add(pauseButton);
         panel.add(cmdPanel, BorderLayout.SOUTH);
         JPanel clrPanel = new JPanel();
@@ -55,9 +57,9 @@ public class Timer implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton Button = (JButton) e.getSource();
-        if (Button.equals(pauseButton)) {
+        if (Button.equals(stopButton)) {
             countTimer.stop();
-        } else if (Button.equals(resumeButton)) {
+        } else if (Button.equals(startButton)) {
             countTimer.start();
         }
     }
