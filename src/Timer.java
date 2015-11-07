@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 public class Timer implements ActionListener {
 
     private final static int SECONDS_PER_HOUR = 3600;
-    private final static int SECONDS_IN_MINUTE = 60;
 
     private JLabel timeLabel = new JLabel();
     private JButton pauseButton = new JButton("Stop");
