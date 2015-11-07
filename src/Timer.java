@@ -70,7 +70,7 @@ public class Timer implements ActionListener {
     }
 
     private class CountTimer implements ActionListener {
-        private int count = 0;
+        private long count = 0;
         private boolean isTimerActive = false;
         private javax.swing.Timer tmr = new javax.swing.Timer(ONE_SECOND, this);
 
@@ -125,10 +125,10 @@ public class Timer implements ActionListener {
         }
     }
 
-    private String timeFormat(int count) {
-        int hours = count / SECONDS_PER_HOUR;
-        int minutes = (count - hours * SECONDS_PER_HOUR) / SECONDS_PER_HOUR;
-        int seconds = count - minutes * SECONDS_PER_HOUR;
+    private String timeFormat(long count) {
+        long hours = count / SECONDS_PER_HOUR;
+        long minutes = (count - hours * SECONDS_PER_HOUR) / SECONDS_PER_HOUR;
+        long seconds = count - minutes * SECONDS_PER_HOUR;
         return String.format("%02d : %02d : %02d", hours, minutes, seconds);
     }
 }
