@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class Timer implements ActionListener {
 
-    private final static int SEC0NDS_PER_HOUR = 3600;
+    private final static int SECONDS_PER_HOUR = 3600;
     private final static int SECONDS_IN_MINUTE = 60;
 
     private JLabel timeLabel = new JLabel();
@@ -91,9 +91,9 @@ public class Timer implements ActionListener {
     }
 
     private String TimeFormat(int count) {
-        int hours = count / SEC0NDS_PER_HOUR;
-        int minutes = (count - hours * SEC0NDS_PER_HOUR) / SEC0NDS_PER_HOUR;
-        int seconds = count - minutes * SEC0NDS_PER_HOUR;
+        int hours = count / SECONDS_PER_HOUR;
+        int minutes = (count - hours * SECONDS_PER_HOUR) / SECONDS_PER_HOUR;
+        int seconds = count - minutes * SECONDS_PER_HOUR;
         return String.format("%02d : %02d : %02d", hours, minutes, seconds);
     }
 }
