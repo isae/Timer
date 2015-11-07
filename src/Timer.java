@@ -68,18 +68,21 @@ public class Timer implements ActionListener {
 
         public CountTimer() {
             count = 0;
-            setTimerText(TimeFormat(count));
+            setTimerText(timeFormat(count));
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if (isTimerActive) {
                 count++;
-                setTimerText(TimeFormat(count));
+                setTimerText(timeFormat(count));
             }
         }
 
         public void start() {
+            if (isTimerActive) {
+                return;
+            }
             isTimerActive = true;
             tmr.restart();
         }
@@ -89,7 +92,7 @@ public class Timer implements ActionListener {
         }
     }
 
-    private String TimeFormat(int count) {
+    private String timeFormat(int count) {
         int hours = count / SECONDS_PER_HOUR;
         int minutes = (count - hours * SECONDS_PER_HOUR) / SECONDS_PER_HOUR;
         int seconds = count - minutes * SECONDS_PER_HOUR;
