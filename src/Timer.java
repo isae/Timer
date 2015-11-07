@@ -11,10 +11,11 @@ public class Timer implements ActionListener {
     private final JLabel timeLabel = new JLabel();
     private final JButton pauseButton = new JButton("Stop");
     private final JButton resumeButton = new JButton("Start");
-    private CountTimer countTimer;
+    private CountTimer countTimer = new CountTimer();
+
 
     public Timer() {
-        setTimerText("         ");
+        setTimerText("press \"Start\"");
         setUpGUI();
     }
 
@@ -38,7 +39,6 @@ public class Timer implements ActionListener {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // JFrame.EXIT_ON_CLOSE
         frame.setVisible(true);
         frame.pack();
-        countTimer = new CountTimer();
     }
 
     private void setTimerText(String sTime) {
