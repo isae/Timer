@@ -3,19 +3,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class Timer implements ActionListener {
 
     private final static int SECONDS_PER_HOUR = 3600;
-
     public static final String START_BUTTON_TEXT = "Start";
     public static final String STOP_BUTTON_TEXT = "Stop";
+    public static final String TIMER_BEGINNING_FILE = "timerBackup.txt";
 
 
     private final JLabel timeLabel = new JLabel();
     private final JButton pauseButton = new JButton(STOP_BUTTON_TEXT);
     private final JButton resumeButton = new JButton(START_BUTTON_TEXT);
-    private CountTimer countTimer = new CountTimer();
+    private final CountTimer countTimer = new CountTimer();
 
 
     public Timer() {
@@ -72,6 +73,18 @@ public class Timer implements ActionListener {
 
         public CountTimer() {
             count = 0;
+            try {
+                if (new File(TIMER_BEGINNING_FILE).exists()) {
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(TIMER_BEGINNING_FILE)))) {
+                        String line = in.readLine();
+                        count = Integer.parseInt(line);
+                    }
+                } else {
+                    backupTime();
+                }
+            } catch (Exception ignore) {
+                backupTime();
+            }
             setTimerText(timeFormat(count));
         }
 
@@ -89,6 +102,17 @@ public class Timer implements ActionListener {
             }
             isTimerActive = true;
             tmr.restart();
+        }
+
+        private void backupTime() {
+            try {
+                try (ConcurrentOutputStream stream = new ConcurrentOutputStream(TIMER_BEGINNING_FILE);
+                     PrintWriter out = new PrintWriter(stream)) {
+                    out.print(count);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to write time");
+            }
         }
 
         public void stop() {
