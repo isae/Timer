@@ -11,6 +11,8 @@ public class Timer implements ActionListener {
     public static final String START_BUTTON_TEXT = "Start";
     public static final String STOP_BUTTON_TEXT = "Stop";
     public static final String TIMER_BEGINNING_FILE = "timerBackup.txt";
+    public static final int ONE_SECOND = 1000;
+
 
 
     private final JLabel timeLabel = new JLabel();
@@ -66,7 +68,6 @@ public class Timer implements ActionListener {
     }
 
     private class CountTimer implements ActionListener {
-        private static final int ONE_SECOND = 1000;
         private int count = 0;
         private boolean isTimerActive = false;
         private javax.swing.Timer tmr = new javax.swing.Timer(ONE_SECOND, this);
@@ -77,7 +78,8 @@ public class Timer implements ActionListener {
                 if (new File(TIMER_BEGINNING_FILE).exists()) {
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(TIMER_BEGINNING_FILE)))) {
                         String line = in.readLine();
-                        count = Integer.parseInt(line);
+                        count = (int) (System.currentTimeMillis() / ONE_SECOND - Integer.parseInt(line));
+
                     }
                 } else {
                     backupTime();
@@ -108,7 +110,7 @@ public class Timer implements ActionListener {
             try {
                 try (ConcurrentOutputStream stream = new ConcurrentOutputStream(TIMER_BEGINNING_FILE);
                      PrintWriter out = new PrintWriter(stream)) {
-                    out.print(count);
+                    out.print(count - System.currentTimeMillis() / ONE_SECOND);
                 }
             } catch (IOException e) {
                 throw new RuntimeException("Failed to write time");
