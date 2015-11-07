@@ -4,13 +4,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Main implements ActionListener {
+public class Timer implements ActionListener {
+
+    private final static int SEC0NDS_PER_HOUR = 3600;
+    private final static int SECONDS_IN_MINUTE = 60;
+
     private JLabel timeLabel = new JLabel();
-    private JButton pauseBtn = new JButton("Stop");
-    private JButton resumeBtn = new JButton("Start");
+    private JButton pauseButton = new JButton("Stop");
+    private JButton resumeButton = new JButton("Start");
     private CountTimer countTimer;
 
-    public Main() {
+    public Timer() {
         setTimerText("         ");
         GUI();
     }
@@ -21,12 +25,12 @@ public class Main implements ActionListener {
         panel.setLayout(new BorderLayout());
         timeLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         panel.add(timeLabel, BorderLayout.NORTH);
-        pauseBtn.addActionListener(this);
-        resumeBtn.addActionListener(this);
+        pauseButton.addActionListener(this);
+        resumeButton.addActionListener(this);
         JPanel cmdPanel = new JPanel();
         cmdPanel.setLayout(new GridLayout());
-        cmdPanel.add(resumeBtn);
-        cmdPanel.add(pauseBtn);
+        cmdPanel.add(resumeButton);
+        cmdPanel.add(pauseButton);
         panel.add(cmdPanel, BorderLayout.SOUTH);
         JPanel clrPanel = new JPanel();
         clrPanel.setLayout(new GridLayout(0, 1));
@@ -44,24 +48,24 @@ public class Main implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton btn = (JButton) e.getSource();
-        if (btn.equals(pauseBtn)) {
+        JButton Button = (JButton) e.getSource();
+        if (Button.equals(pauseButton)) {
             countTimer.stop();
-        } else if (btn.equals(resumeBtn)) {
+        } else if (Button.equals(resumeButton)) {
             countTimer.start();
         }
     }
 
 
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(Main::new);
+        java.awt.EventQueue.invokeLater(Timer::new);
     }
 
     private class CountTimer implements ActionListener {
         private static final int ONE_SECOND = 1000;
         private int count = 0;
         private boolean isTimerActive = false;
-        private Timer tmr = new Timer(ONE_SECOND, this);
+        private javax.swing.Timer tmr = new javax.swing.Timer(ONE_SECOND, this);
 
         public CountTimer() {
             count = 0;
@@ -87,9 +91,9 @@ public class Main implements ActionListener {
     }
 
     private String TimeFormat(int count) {
-        int hours = count / 3600;
-        int minutes = (count - hours * 3600) / 60;
-        int seconds = count - minutes * 60;
-        return String.format("%02d", hours) + " : " + String.format("%02d", minutes) + " : " + String.format("%02d", seconds);
+        int hours = count / SEC0NDS_PER_HOUR;
+        int minutes = (count - hours * SEC0NDS_PER_HOUR) / SEC0NDS_PER_HOUR;
+        int seconds = count - minutes * SEC0NDS_PER_HOUR;
+        return String.format("%02d : %02d : %02d", hours, minutes, seconds);
     }
 }
