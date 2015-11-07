@@ -119,6 +119,7 @@ public class Timer implements ActionListener {
 
         public void stop() {
             isTimerActive = false;
+            new File(TIMER_BEGINNING_FILE).delete();
         }
     }
 
