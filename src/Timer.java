@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
-public class Timer implements ActionListener {
+public class Timer {
 
     private final static int SECONDS_PER_HOUR = 3600;
     public static final String START_BUTTON_TEXT = "Start";
     public static final String STOP_BUTTON_TEXT = "Stop";
-    public static final String TIMER_BEGINNING_FILE = "timerBackup.txt";
+    public static final String TIMER_STORAGE = "storage.txt";
     public static final int ONE_SECOND = 1000;
     private static final String PAUSE_BUTTON_TEXT = "Pause";
 
@@ -33,8 +33,15 @@ public class Timer implements ActionListener {
         panel.setLayout(new BorderLayout());
         timeLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         panel.add(timeLabel, BorderLayout.NORTH);
-        stopButton.addActionListener(this);
-        startButton.addActionListener(this);
+
+        startButton.addActionListener((actionEvent) -> {
+            countTimer.start();
+        });
+
+        stopButton.addActionListener((actionEvent) -> {
+            countTimer.stop();
+        });
+
         JPanel cmdPanel = new JPanel();
         cmdPanel.setLayout(new GridLayout());
         cmdPanel.add(startButton);
@@ -54,17 +61,6 @@ public class Timer implements ActionListener {
         timeLabel.setText(sTime);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton Button = (JButton) e.getSource();
-        if (Button.equals(stopButton)) {
-            countTimer.stop();
-        } else if (Button.equals(startButton)) {
-            countTimer.start();
-        }
-    }
-
-
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(Timer::new);
     }
@@ -77,11 +73,18 @@ public class Timer implements ActionListener {
         public CountTimer() {
             count = 0;
             try {
-                if (new File(TIMER_BEGINNING_FILE).exists()) {
-                    try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(TIMER_BEGINNING_FILE)))) {
-                        String line = in.readLine();
-                        count = (int) (System.currentTimeMillis() / ONE_SECOND - Integer.parseInt(line));
-
+                if (new File(TIMER_STORAGE).exists()) {
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(TIMER_STORAGE)))) {
+                        String s = in.readLine();
+                        if (s == null) {
+                            count = 0;
+                        } else {
+                            if (s.startsWith("stop")) {
+                                count = Integer.parseInt(s.substring(4));
+                            } else {
+                                count = (int) ((System.currentTimeMillis() - Long.parseLong(s.substring(5))) / 1000);
+                            }
+                        }
                     }
                 } else {
                     backupTime();
@@ -106,14 +109,17 @@ public class Timer implements ActionListener {
             }
             isTimerActive = true;
             tmr.restart();
+
+            try (PrintWriter printWriter = new PrintWriter(new FileWriter(TIMER_STORAGE))) {
+                printWriter.println("start" + (System.currentTimeMillis() - (count * 1000)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         private void backupTime() {
-            try {
-                try (ConcurrentOutputStream stream = new ConcurrentOutputStream(TIMER_BEGINNING_FILE);
-                     PrintWriter out = new PrintWriter(stream)) {
-                    out.print(count - System.currentTimeMillis() / ONE_SECOND);
-                }
+            try (PrintWriter out = new PrintWriter(TIMER_STORAGE)) {
+                out.print(count - (System.currentTimeMillis() / ONE_SECOND));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to write time");
             }
@@ -121,7 +127,12 @@ public class Timer implements ActionListener {
 
         public void stop() {
             isTimerActive = false;
-            new File(TIMER_BEGINNING_FILE).delete();
+            try (PrintWriter printWriter = new PrintWriter(new FileWriter(TIMER_STORAGE))) {
+                printWriter.println("stop" + count);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
