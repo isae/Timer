@@ -8,17 +8,17 @@ public class Timer implements ActionListener {
 
     private final static int SECONDS_PER_HOUR = 3600;
 
-    private JLabel timeLabel = new JLabel();
-    private JButton pauseButton = new JButton("Stop");
-    private JButton resumeButton = new JButton("Start");
+    private final JLabel timeLabel = new JLabel();
+    private final JButton pauseButton = new JButton("Stop");
+    private final JButton resumeButton = new JButton("Start");
     private CountTimer countTimer;
 
     public Timer() {
         setTimerText("         ");
-        GUI();
+        setUpGUI();
     }
 
-    private void GUI() {
+    private void setUpGUI() {
         JFrame frame = new JFrame();
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
