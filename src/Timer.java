@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +22,7 @@ public class Timer {
 
 
     public Timer() {
-        setTimerText("press \"" + START_BUTTON_TEXT + "\"");
+        setTimerText("00 : 00 : 00");
         setUpGUI();
     }
 
@@ -39,6 +38,10 @@ public class Timer {
         });
 
         pauseButton.addActionListener((actionEvent) -> {
+            countTimer.pause();
+        });
+
+        stopButton.addActionListener((actionEvent) -> {
             countTimer.stop();
         });
 
@@ -78,11 +81,18 @@ public class Timer {
                         String s = in.readLine();
                         if (s == null) {
                             count = 0;
+                            setTimerText(timeFormat(count));
+                            timeLabel.repaint();
                         } else {
-                            if (s.startsWith("stopButton")) {
+                            if (s.startsWith("stop")) {
                                 count = Integer.parseInt(s.substring(4));
+                                setTimerText(timeFormat(count));
+                                timeLabel.repaint();
                             } else {
                                 count = (int) ((System.currentTimeMillis() - Long.parseLong(s.substring(5))) / 1000);
+                                setTimerText(timeFormat(count));
+                                timeLabel.repaint();
+                                start();
                             }
                         }
                     }
@@ -92,7 +102,6 @@ public class Timer {
             } catch (Exception ignore) {
                 backupTime();
             }
-            setTimerText(timeFormat(count));
         }
 
         @Override
@@ -125,14 +134,21 @@ public class Timer {
             }
         }
 
-        public void stop() {
+        public void pause() {
             isTimerActive = false;
             try (PrintWriter printWriter = new PrintWriter(new FileWriter(TIMER_STORAGE))) {
-                printWriter.println("stopButton" + count);
+                printWriter.println("stop" + count);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+        }
+
+        public void stop() {
+            countTimer.count = 0;
+            setTimerText(timeFormat(count));
+            countTimer.pause();
+            new File(TIMER_STORAGE).delete();
         }
     }
 
