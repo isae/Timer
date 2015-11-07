@@ -16,9 +16,9 @@ public class Timer {
 
 
     private final JLabel timeLabel = new JLabel();
-    private final JButton stopButton = new JButton(STOP_BUTTON_TEXT);
-    private final JButton startButton = new JButton(START_BUTTON_TEXT);
     private final JButton pauseButton = new JButton(PAUSE_BUTTON_TEXT);
+    private final JButton startButton = new JButton(START_BUTTON_TEXT);
+    private final JButton stopButton = new JButton(STOP_BUTTON_TEXT);
     private final CountTimer countTimer = new CountTimer();
 
 
@@ -38,15 +38,15 @@ public class Timer {
             countTimer.start();
         });
 
-        stopButton.addActionListener((actionEvent) -> {
+        pauseButton.addActionListener((actionEvent) -> {
             countTimer.stop();
         });
 
         JPanel cmdPanel = new JPanel();
         cmdPanel.setLayout(new GridLayout());
         cmdPanel.add(startButton);
-        cmdPanel.add(stopButton);
         cmdPanel.add(pauseButton);
+        cmdPanel.add(stopButton);
         panel.add(cmdPanel, BorderLayout.SOUTH);
         JPanel clrPanel = new JPanel();
         clrPanel.setLayout(new GridLayout(0, 1));
@@ -79,7 +79,7 @@ public class Timer {
                         if (s == null) {
                             count = 0;
                         } else {
-                            if (s.startsWith("stop")) {
+                            if (s.startsWith("stopButton")) {
                                 count = Integer.parseInt(s.substring(4));
                             } else {
                                 count = (int) ((System.currentTimeMillis() - Long.parseLong(s.substring(5))) / 1000);
@@ -128,7 +128,7 @@ public class Timer {
         public void stop() {
             isTimerActive = false;
             try (PrintWriter printWriter = new PrintWriter(new FileWriter(TIMER_STORAGE))) {
-                printWriter.println("stop" + count);
+                printWriter.println("stopButton" + count);
             } catch (IOException e) {
                 e.printStackTrace();
             }
